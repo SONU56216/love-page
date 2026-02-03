@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine – Forever Love</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{
+  height:100vh;
+  background:#000;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+/* STAR SKY */
+.star{position:fixed;width:2px;height:2px;background:white;opacity:0.8;animation:twinkle 3s infinite alternate;}
+@keyframes twinkle{from{opacity:0.2;}to{opacity:1;}}
+
+.page{
+  position:absolute;
+  width:92%;
+  max-width:720px;
+  padding:40px;
+  border-radius:24px;
+  display:none;
+  animation:fadeUp 1s ease forwards;
+}
+
+button{
+  margin:15px;padding:12px 30px;
+  border:none;border-radius:30px;
+  background:#ff4d6d;color:white;
+  font-size:16px;font-weight:600;
+  cursor:pointer;transition:0.3s;position:relative;
+}
+button:hover{transform:scale(1.1);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+@keyframes petalFall{to{transform:translateY(110vh) rotate(360deg);opacity:0;}}
+@keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.3);}}
+
+/* Proposal Heart & Petals */
+.big-heart{font-size:80px;animation:heartbeat 1.2s infinite;}
+.petal{position:fixed;top:-20px;font-size:18px;animation:petalFall 8s linear infinite;}
+
+video{width:100%;border-radius:18px;}
+
+.letter{font-size:18px;line-height:1.6;white-space:pre-wrap;}
+#letterText::after {content: '|'; animation: blink 0.7s steps(1) infinite;}
+@keyframes blink {50%{opacity:0;}}
+
+/* YES sparkle animation */
+#yesBtn{overflow:hidden;}
+.sparkle{
+  position:absolute;
+  width:4px;height:4px;
+  background:yellow;
+  border-radius:50%;
+  pointer-events:none;
+  animation:spin 0.6s linear forwards;
+}
+@keyframes spin{to{transform:translate(0,-20px) scale(0);opacity:0;}}
+
+/* NO button trick */
+.no-btn{
+  background:#aaa;
+  position:absolute;
+  transition: all 0.3s ease;
+  cursor:pointer;
+}
+
+/* Countdown couple photo */
+#couplePhoto{
+  width:200px;
+  max-width:80%;
+  border-radius:20px;
+  margin-bottom:20px;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+</style>
+</head>
+<body>
+
+<audio id="music" src="hajar.mp3.mp3" loop></audio>
+
+<!-- HOME -->
+<div class="page" id="home" style="display:block;background:rgba(0,0,0,0.6);color:#f5c86a;">
+  <h1>Under the stars, Uma ✨</h1>
+  <p>This is my heart for you ❤️</p>
+  <button onclick="goProposal()">Begin Our Story</button>
+</div>
+
+<!-- PROPOSAL -->
+<div class="page" id="proposal" style="background:#ffe6eb;color:#333;">
+  <div class="big-heart">❤️</div>
+  <h1>Uma, will you marry me? 💍</h1>
+  <div style="position:relative; height:80px;">
+    <button id="yesBtn" onclick="goLetter()">YES ❤️</button>
+    <button id="noBtn" class="no-btn">NO 😢</button>
+  </div>
+</div>
+
+<!-- LETTER -->
+<div class="page" id="letter" style="background:#fff0f5;color:#333;">
+  <h1>My Love Letter 💌</h1>
+  <div class="letter" id="letterText"></div>
+  <button onclick="goVideo()">Watch Surprise 🎥</button>
+</div>
+
+<!-- VIDEO -->
+<div class="page" id="video" style="background:#000;color:white;">
+  <h1>Our Moment 🎥</h1>
+  <video controls>
+    <source src="video.mp4" type="video/mp4">
+  </video>
+  <button onclick="goFinal()">Continue ❤️</button>
+</div>
+
+<!-- FINAL -->
+<div class="page" id="final" style="background:#ffc0cb;color:#333;">
+  <h1>Forever Starts Now 💖</h1>
+  <p>You are my universe ✨</p>
+  <button onclick="goCountdown()">Countdown to Our Day ⏳</button>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="page" id="countdown" style="background:#000;color:#ffb6c1;">
+  <img id="couplePhoto" src="goal.jpeg" alt="Our Photo">
+  <h1>Our Special Day 💍</h1>
+  <p id="timer" style="font-size:26px;margin-top:20px;"></p>
+  <p style="opacity:0.8;margin-top:10px;">Until the moment our forever begins ❤️</p>
+</div>
+
+<script>
+// Stars
+for(let i=0;i<120;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  s.style.left=Math.random()*100+'vw';
+  s.style.top=Math.random()*100+'vh';
+  document.body.appendChild(s);
+}
+
+// Pages control
+const pages = [home, proposal, letter, video, final, countdown];
+function hideAll(){ pages.forEach(p=>p.style.display='none'); }
+
+function goProposal(){ hideAll(); proposal.style.display='block'; music.play();}
+function goLetter(){ hideAll(); letter.style.display='block'; typeLetter();}
+function goVideo(){ hideAll(); video.style.display='block';}
+function goFinal(){ hideAll(); final.style.display='block';}
+function goCountdown(){ hideAll(); countdown.style.display='block';}
+
+// Auto typing letter
+const text="Uma,\n\nFrom the moment you entered my life, everything became brighter.\nI choose you today, tomorrow, and forever.\n\nLove always ❤️";
+let i=0;
+function typeLetter(){
+  if(i<text.length){
+    letterText.innerHTML+=text.charAt(i);
+    i++;
+    setTimeout(typeLetter,60);
+  }
+}
+
+// Rose petals
+setInterval(()=>{
+  const p=document.createElement('div');
+  p.className='petal';
+  p.innerText='🌹';
+  p.style.left=Math.random()*100+'vw';
+  p.style.fontSize=(12 + Math.random()*12)+'px';
+  p.style.animationDuration=(6 + Math.random()*4)+'s';
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),8000);
+},700);
+
+// Countdown Timer
+const specialDate = new Date(2026, 1, 14); // Feb 14, 2026
+const timer = document.getElementById('timer');
+const countdownInterval = setInterval(()=>{
+  const now = new Date();
+  const diff = specialDate - now;
+  if(diff>0){
+    const d=Math.floor(diff/(1000*60*60*24));
+    const h=Math.floor((diff/(1000*60*60))%24);
+    const m=Math.floor((diff/(1000*60))%60);
+    const s=Math.floor((diff/1000)%60);
+    timer.innerHTML = `${d} Days ${h} Hours ${m} Minutes ${s} Seconds`;
+  } else {
+    timer.innerHTML="💖 It's Our Day! 💖";
+    clearInterval(countdownInterval);
+  }
+},1000);
+
+// NO button trick
+const noBtn = document.getElementById('noBtn');
+noBtn.addEventListener('mouseover', ()=>{
+  const maxX = proposal.offsetWidth - noBtn.offsetWidth;
+  const maxY = 50; 
+  noBtn.style.left = Math.random()*maxX + 'px';
+  noBtn.style.top = Math.random()*maxY + 'px';
+  noBtn.style.transform = `rotate(${Math.random()*20-10}deg)`;
+});
+
+// YES button sparkles
+const yesBtn = document.getElementById('yesBtn');
+yesBtn.addEventListener('mousemove', (e)=>{
+  for(let j=0;j<2;j++){
+    const sparkle = document.createElement('div');
+    sparkle.className='sparkle';
+    sparkle.style.left = e.offsetX + Math.random()*20-10 + 'px';
+    sparkle.style.top = e.offsetY + Math.random()*20-10 + 'px';
+    yesBtn.appendChild(sparkle);
+    setTimeout(()=>sparkle.remove(),600);
+  }
+});
+</script>
+
+</body>
+</html>
